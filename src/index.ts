@@ -9,11 +9,12 @@ import { InMemoryDatabase } from "./db";
 
 const database = new InMemoryDatabase();
 const server = new PtServer();
-const router = new PtRouter("/api");
-const mealsService = new MealsService(database);
 
+const mealsService = new MealsService(database);
+const router = new PtRouter("/api");
 router.use(createUnicornsController(new UnicornsService(database, mealsService)));
 router.use(createMealsController(mealsService));
+
 server.use(router);
 
 async function main() {
