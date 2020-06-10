@@ -36,7 +36,9 @@ export class PtRouter {
 
   protected getRoutes(url: string, method: string): PtRoute[] {
     const ownRoutes = this.routesByUrl[url]?.filter((route) => route.method === method) ?? [];
-    const subRoutes = this.subRouters.map((router) => router.getRoutes(url, method));
+    const subUrl = url.replace(new RegExp(`^${this.baseUrl}`), "");
+    const subRoutes = this.subRouters.map((router) => router.getRoutes(subUrl, method));
+
     return ownRoutes.concat(...subRoutes);
   }
 
@@ -45,11 +47,12 @@ export class PtRouter {
   }
 
   private addRoute(url: string, handler: PtHandler, method: string) {
-    let routes = this.routesByUrl[url];
+    const formattedUrl = this.baseUrl + url.replace(/\/$/, '');
+    let routes = this.routesByUrl[formattedUrl];
 
     if (routes == null) {
       routes = [];
-      this.routesByUrl[this.baseUrl + url] = routes;
+      this.routesByUrl[formattedUrl] = routes;
     }
 
     routes.push({

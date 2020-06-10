@@ -41,7 +41,7 @@ export class PtServer extends PtRouter {
 
     console.log("requested", req.url, req.method);
 
-    const routes = this.getRoutes(req.url!, req.method!);
+    const routes = this.getRoutes(requestUrl.pathname!, req.method!);
     let response;
 
     
