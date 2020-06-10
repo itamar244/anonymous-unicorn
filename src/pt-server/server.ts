@@ -4,6 +4,7 @@ import { createServer, Server, IncomingMessage, ServerResponse } from "http";
 
 import { PtRouter } from "./router";
 import { logTime } from "./decorators";
+import { PtError } from "./errors";
 
 export class PtServer extends PtRouter {
   server?: Server;
@@ -52,13 +53,26 @@ export class PtServer extends PtRouter {
     }
     
     for (const { handler } of routes) {
-      const handlerResponse = await handler({
-        body,
-        query: querystring.parse(requestUrl.query ?? ""),
-      });
-      
-      if (response === undefined) {
-        response = handlerResponse;
+      try {
+        const handlerResponse = await handler({
+          body,
+          query: querystring.parse(requestUrl.query ?? ""),
+        });
+        
+        if (response === undefined) {
+          response = handlerResponse;
+        }
+      } catch (error) {
+        if (error instanceof PtError) {
+          res.writeHead(error.statusCode, { "Content-Type": "application/json" });
+          res.write(JSON.stringify({
+            message: error.message,
+            meta: error.meta,
+            stack: error.stack,
+          }));
+        }
+        res.end();
+        return;
       }
     }
     

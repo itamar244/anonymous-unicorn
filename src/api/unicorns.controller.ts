@@ -1,13 +1,18 @@
 import { PtRouter } from "../pt-server/router";
 import { UnicornsService } from "./unicorns.service";
 import { Unicorn } from "./interfaces";
+import { PtError } from "../pt-server/errors";
 
 export function createUnicornsController(service: UnicornsService) {
   const router = new PtRouter("/unicorns");
 
-  router.get("/", (req) => {
+  router.get("/", async (req) => {
     if (typeof req.query.id === "string") {
-      return service.getUnicornById(req.query.id);
+      const unicorn = await service.getUnicornById(req.query.id);
+
+      if (unicorn === null) {
+        throw new PtError(404, "unicorn with given not found", { id: req.query.id });
+      }
     }
 
     return service.getAllUnicorns();
