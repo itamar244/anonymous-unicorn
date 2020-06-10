@@ -18,4 +18,9 @@ export class UnicornsService {
       id: (this.currentId++).toString(),
     });
   }
+
+  updateUnicorn(id: string, update: Partial<Unicorn>) {
+    const unicorn = this.getUnicornById(id);
+    Object.assign(unicorn, update, {id});
+  }
 }
