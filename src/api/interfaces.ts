@@ -7,6 +7,10 @@ export interface Unicorn extends Item {
   hornLength: number;
 }
 
+export interface ResolvedUnicorn extends Unicorn {
+  meals: Meal[];
+}
+
 export interface Meal extends Item {
   unicornId: string;
   // in g
