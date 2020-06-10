@@ -1,16 +1,25 @@
-import {PtServer} from "./server";
+import { PtServer } from "./server";
+import { PtRouter } from "./router";
 
 const server = new PtServer();
+const router = new PtRouter("/api");
 
-server.get('/hello', () => {
+router.get("/hello", () => {
   return "Hello World!";
 });
 
-server.post('/request', (req) => {
+router.post("/request", (req) => {
   return {
     body: req.body,
     query: req.query,
   };
 });
 
-server.listen(4000);
+server.use(router);
+
+async function main() {
+  await server.listen(4000);
+  console.log("server is running");
+}
+
+main().catch(console.error);
