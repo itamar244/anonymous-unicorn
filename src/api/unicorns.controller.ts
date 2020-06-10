@@ -13,6 +13,8 @@ export function createUnicornsController(service: UnicornsService) {
       if (unicorn === null) {
         throw new PtError(404, "unicorn with given not found", { id: req.query.id });
       }
+
+      return unicorn;
     }
 
     return service.getAllUnicorns();

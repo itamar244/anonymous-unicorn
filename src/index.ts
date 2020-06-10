@@ -18,6 +18,7 @@ router.use(createMealsController(mealsService));
 server.use(router);
 
 async function main() {
+  await database.init();
   await server.listen(4000);
   console.log("server is running");
 }
