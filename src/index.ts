@@ -1,5 +1,5 @@
-import { PtServer } from "./server";
-import { PtRouter } from "./router";
+import { PtServer } from "./pt-server/server";
+import { PtRouter } from "./pt-server/router";
 
 const server = new PtServer();
 const router = new PtRouter("/api");
