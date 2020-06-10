@@ -1,21 +1,18 @@
+import { IDatabase } from "../db";
 import { Meal } from "./interfaces";
 
 export class MealsService {
-  private meals: Meal[] = [];
-  private currentId = 0;
+  constructor(private db: IDatabase<"meals", Meal>) {}
 
-  getMealsByUnicornId(id: string): Meal[] {
-    return this.meals.filter((meal) => meal.unicornId === id);
+  getMealsByUnicornId(id: string): Promise<Meal[]> {
+    return this.db.find("meals", { unicornId: id });
   }
 
-  getAllMeals(): Meal[] {
-    return this.meals;
+  getAllMeals(): Promise<Meal[]> {
+    return this.db.get("meals");
   }
 
-  addMeal(meal: Meal) {
-    this.meals.push({
-      ...meal,
-      id: (this.currentId++).toString(),
-    });
+  async addMeal(meal: Meal) {
+    await this.db.create("meals", meal);
   }
 }

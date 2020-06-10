@@ -13,8 +13,8 @@ export function createMealsController(service: MealsService) {
     return service.getAllMeals();
   });
 
-  router.post("/", (req) => {
-    service.addMeal(req.body as Meal);
+  router.post("/", async (req) => {
+    await service.addMeal(req.body as Meal);
   });
 
   return router;

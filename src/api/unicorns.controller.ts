@@ -13,12 +13,12 @@ export function createUnicornsController(service: UnicornsService) {
     return service.getAllUnicorns();
   });
 
-  router.post("/", (req) => {
-    service.createUnicorn(req.body as Unicorn);
+  router.post("/", async (req) => {
+    await service.createUnicorn(req.body as Unicorn);
   });
 
-  router.put("/", (req) => {
-    service.updateUnicorn(req.query.id as string, req.body as Partial<Unicorn>);
+  router.put("/", async (req) => {
+    await service.updateUnicorn(req.query.id as string, req.body as Partial<Unicorn>);
   });
 
   return router;

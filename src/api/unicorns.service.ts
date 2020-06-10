@@ -1,26 +1,22 @@
+import { IDatabase } from "../db";
 import { Unicorn } from "./interfaces";
 
 export class UnicornsService {
-  private unicorns: Unicorn[] = [];
-  private currentId = 0;
+  constructor(private db: IDatabase<"unicorns", Unicorn>) {}
 
-  getUnicornById(id: string): Unicorn | null {
-    return this.unicorns.find((unicorn) => unicorn.id === id) ?? null;
+  getUnicornById(id: string): Promise<Unicorn | null> {
+    return this.db.findOneById("unicorns", id);
   }
 
-  getAllUnicorns(): Unicorn[] {
-    return this.unicorns;
+  getAllUnicorns(): Promise<Unicorn[]> {
+    return this.db.get("unicorns");
   }
 
-  createUnicorn(unicorn: Unicorn) {
-    this.unicorns.push({
-      ...unicorn,
-      id: (this.currentId++).toString(),
-    });
+  async createUnicorn(unicorn: Unicorn) {
+    await this.db.create("unicorns", unicorn);
   }
 
-  updateUnicorn(id: string, update: Partial<Unicorn>) {
-    const unicorn = this.getUnicornById(id);
-    Object.assign(unicorn, update, {id});
+  async updateUnicorn(id: string, update: Partial<Unicorn>) {
+    await this.db.update("unicorns", id, update);
   }
 }

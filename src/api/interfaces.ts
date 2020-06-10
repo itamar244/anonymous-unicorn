@@ -1,13 +1,13 @@
-export interface Unicorn {
-  id: string;
+import { Item } from "../db";
+
+export interface Unicorn extends Item {
   name: string;
   color: string;
   // in cm
   hornLength: number;
 }
 
-export interface Meal {
-  id: string;
+export interface Meal extends Item {
   unicornId: string;
   // in g
   weight: number;
