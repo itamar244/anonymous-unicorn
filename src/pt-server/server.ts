@@ -7,7 +7,7 @@ import { logTime } from "./decorators";
 import { PtError } from "./errors";
 
 export class PtServer extends PtRouter {
-  server?: Server;
+  private server?: Server;
 
   async listen(port: number) {
     await this.unlisten();

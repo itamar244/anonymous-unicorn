@@ -1,5 +1,3 @@
-import { logTime } from "./decorators";
-
 export interface PtRequest {
   body?: object | string;
   query: Partial<Record<string, string | string[]>>;
@@ -15,8 +13,11 @@ export interface PtRoute {
 export class PtRouter {
   private routesByUrl: Partial<Record<string, PtRoute[]>> = {};
   private subRouters: PtRouter[] = [];
+  private baseUrl: string;
 
-  constructor(private baseUrl: string = "") {}
+  constructor(baseUrl: string = "") {
+    this.baseUrl = this.enforceSlashInStart(baseUrl);
+  }
 
   get(url: string, handler: PtHandler) {
     this.addRoute(url, handler, "GET");
@@ -34,20 +35,27 @@ export class PtRouter {
     this.addRoute(url, handler, "DELETE");
   }
 
-  protected getRoutes(url: string, method: string): PtRoute[] {
-    const ownRoutes = this.routesByUrl[url]?.filter((route) => route.method === method) ?? [];
-    const subUrl = url.replace(new RegExp(`^${this.baseUrl}`), "");
-    const subRoutes = this.subRouters.map((router) => router.getRoutes(subUrl, method));
-
-    return ownRoutes.concat(...subRoutes);
-  }
-
   use(router: PtRouter) {
     this.subRouters.push(router);
   }
 
+  protected getRoutes(nonFormattedUrl: string, method: string): PtRoute[] {
+    const url = this.enforceSlashInStart(nonFormattedUrl);
+    const ownRoutes = this.routesByUrl[url]?.filter((route) => route.method === method) ?? [];
+    const subUrl = url.replace(new RegExp(`^${this.baseUrl}`), "");
+    const subRoutes = url.startsWith(this.baseUrl)
+      ? this.subRouters.map((router) => router.getRoutes(subUrl, method))
+      : [];
+
+    return ownRoutes.concat(...subRoutes);
+  }
+
+  private enforceSlashInStart(url: string): string {
+    return url.startsWith("/") ? url : `/${url}`;
+  }
+
   private addRoute(url: string, handler: PtHandler, method: string) {
-    const formattedUrl = this.baseUrl + url.replace(/\/$/, '');
+    const formattedUrl = this.baseUrl + url.replace(/\/$/, "");
     let routes = this.routesByUrl[formattedUrl];
 
     if (routes == null) {
