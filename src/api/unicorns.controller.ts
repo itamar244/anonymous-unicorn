@@ -1,7 +1,6 @@
-import { PtRouter } from "../pt-server/router";
+import { PtRouter, PtError } from "../pt-server";
 import { UnicornsService } from "./unicorns.service";
 import { Unicorn } from "./interfaces";
-import { PtError } from "../pt-server/errors";
 
 export function createUnicornsController(service: UnicornsService) {
   const router = new PtRouter("/unicorns");

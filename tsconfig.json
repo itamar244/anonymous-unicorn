@@ -3,6 +3,7 @@
     "outDir": "./dist",
     "target": "es2017",
     "strict": true,
+    "moduleResolution": "Node",
     "experimentalDecorators": true
   }
 }

@@ -1,4 +1,4 @@
-import { PtRouter } from "../pt-server/router";
+import { PtRouter } from "../pt-server";
 import { MealsService } from "./meals.service";
 import { Meal } from "./interfaces";
 

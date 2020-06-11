@@ -1,5 +1,4 @@
-import { PtServer } from "./pt-server/server";
-import { PtRouter } from "./pt-server/router";
+import { PtServer, PtRouter } from "./pt-server";
 
 import { createUnicornsController } from "./api/unicorns.controller";
 import { UnicornsService } from "./api/unicorns.service";
