@@ -11,11 +11,11 @@ export class PtServer extends PtRouter {
 
   async listen(port: number) {
     await this.unlisten();
-    
+
     this.server = createServer((req, res) => {
       this.listener(req, res);
     });
-    
+
     this.server.listen(port);
   }
 
@@ -34,7 +34,7 @@ export class PtServer extends PtRouter {
       });
     });
   }
-  
+
   @logTime
   private async listener(req: IncomingMessage, res: ServerResponse) {
     const body = await this.getBody(req);
@@ -45,37 +45,39 @@ export class PtServer extends PtRouter {
     const routes = this.getRoutes(requestUrl.pathname!, req.method!);
     let response;
 
-    
     if (routes.length === 0) {
       res.writeHead(404);
       res.end();
       return;
     }
-    
+
     for (const { handler } of routes) {
       try {
         const handlerResponse = await handler({
           body,
           query: querystring.parse(requestUrl.query ?? ""),
         });
-        
+
         if (response === undefined) {
           response = handlerResponse;
         }
       } catch (error) {
-        if (error instanceof PtError) {
-          res.writeHead(error.statusCode, { "Content-Type": "application/json" });
-          res.write(JSON.stringify({
-            message: error.message,
-            meta: error.meta,
-            stack: error.stack,
-          }));
-        }
+        
+        const statusCode = error.statusCode ?? 500;
+        const response = {
+          message: error.message ?? "Exception was thrown in the server",
+          meta: error.meta ?? {},
+          stack: error.stack,
+          statusCode: statusCode,
+        };
+
+        res.writeHead(statusCode, { "Content-Type": "application/json" });
+        res.write(JSON.stringify(response));
         res.end();
         return;
       }
     }
-    
+
     if (response !== undefined) {
       res.writeHead(200, { "Content-Type": "application/json" });
       res.write(JSON.stringify(response));
