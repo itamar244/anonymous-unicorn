@@ -7,13 +7,8 @@ export function createUnicornsController(service: UnicornsService) {
 
   router.get("/", async (req) => {
     if (typeof req.query.id === "string") {
-      const unicorn = await service.getUnicornById(req.query.id);
-
-      if (unicorn === null) {
-        throw new PtError(404, "unicorn with given not found", { id: req.query.id });
-      }
-
-      return unicorn;
+      const id = req.query.id;
+      return await getUnicorn(id);
     }
 
     return service.getAllUnicorns();
@@ -24,8 +19,20 @@ export function createUnicornsController(service: UnicornsService) {
   });
 
   router.put("/", async (req) => {
-    await service.updateUnicorn(req.query.id as string, req.body as Partial<Unicorn>);
+    const id = (req.query.id as string);
+    await getUnicorn(id);
+    await service.updateUnicorn(id, req.body as Partial<Unicorn>);
   });
 
   return router;
+
+  async function getUnicorn(id: string) {
+    const unicorn = await service.getUnicornById(id);
+
+    if (unicorn === null) {
+      throw new PtError(404, "unicorn with given id not found", { id });
+    }
+
+    return unicorn;
+  }
 }

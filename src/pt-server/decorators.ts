@@ -6,8 +6,16 @@ export function logTime(_target: object, _funcName: PropertyKey, descriptor: Pro
     const currentCallId = callId++;
     const callName = `${originalFunc.name}-${currentCallId}`;
     console.time(callName);
-    const value = originalFunc.apply(this, arguments);
-    if (typeof value === "object" && typeof value?.then === "function") {
+
+    let value;
+    try {
+      value = originalFunc.apply(this, arguments);
+    } catch (error) {
+      console.timeEnd(callName);
+      throw error;
+    }
+
+    if (typeof value?.then === "function") {
       return (value as Promise<any>).finally(() => {
         console.timeEnd(callName);
       });

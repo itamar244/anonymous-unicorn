@@ -1,12 +1,12 @@
-import { IDatabase } from "../db";
+import { IDatabaseCollection } from "../db";
 import { Unicorn, ResolvedUnicorn } from "./interfaces";
 import { MealsService } from "./meals.service";
 
 export class UnicornsService {
-  constructor(private db: IDatabase<"unicorns", Unicorn>, private mealsService: MealsService) {}
+  constructor(private db: IDatabaseCollection<Unicorn>, private mealsService: MealsService) {}
 
   async getUnicornById(id: string): Promise<ResolvedUnicorn | null> {
-    const unicorn = await this.db.findOneById("unicorns", id);
+    const unicorn = await this.db.findOneById(id);
 
     if (unicorn !== null) {
       return {
@@ -19,14 +19,14 @@ export class UnicornsService {
   }
 
   getAllUnicorns(): Promise<Unicorn[]> {
-    return this.db.get("unicorns");
+    return this.db.get();
   }
 
   async createUnicorn(unicorn: Unicorn) {
-    await this.db.create("unicorns", unicorn);
+    await this.db.create(unicorn);
   }
 
   async updateUnicorn(id: string, update: Partial<Unicorn>) {
-    await this.db.update("unicorns", id, update);
+    await this.db.update(id, update);
   }
 }
