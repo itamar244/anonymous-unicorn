@@ -12,19 +12,25 @@ export class PtServer extends PtRouter {
   async listen(port: number) {
     await this.unlisten();
 
-    this.server = createServer((req, res) => {
+    const server = createServer((req, res) => {
       this.listener(req, res);
     });
+    this.server = server;
 
-    this.server.listen(port);
+    return new Promise((resolve) => {
+      server.listen(port, () => {
+        resolve();
+      });
+    });
   }
 
   unlisten() {
-    if (!this.server) {
-      return Promise.resolve();
-    }
-
     return new Promise((resolve, reject) => {
+      if (!this.server) {
+        resolve();
+        return;
+      }
+      
       this.server?.close((err) => {
         if (err) {
           reject(err);
