@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "target": "es6",
-    "strict": true
+    "target": "es2017",
+    "strict": true,
+    "moduleResolution": "Node",
+    "experimentalDecorators": true
   }
 }
