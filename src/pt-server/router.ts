@@ -5,6 +5,12 @@ export interface PtRequest {
 
 export type PtHandler = (req: PtRequest) => unknown | Promise<unknown>;
 
+export type PtRouteMethod =
+  | "get"
+  | "post"
+  | "put"
+  | "delete";
+
 export interface PtRoute {
   method: string;
   handler: PtHandler;
@@ -20,23 +26,24 @@ export class PtRouter {
   }
 
   get(path: string, handler: PtHandler) {
-    this.addRoute(path, handler, "GET");
+    return this.addRoute(path, handler, "get");
   }
 
   post(path: string, handler: PtHandler) {
-    this.addRoute(path, handler, "POST");
+    return this.addRoute(path, handler, "post");
   }
 
   put(path: string, handler: PtHandler) {
-    this.addRoute(path, handler, "PUT");
+    return this.addRoute(path, handler, "put");
   }
 
   delete(path: string, handler: PtHandler) {
-    this.addRoute(path, handler, "DELETE");
+    return this.addRoute(path, handler, "delete");
   }
 
   use(router: PtRouter) {
     this.subRouters.push(router);
+    return this;
   }
 
   protected getRoutes(nonFormattedPath: string, method: string): PtRoute[] {
@@ -54,7 +61,7 @@ export class PtRouter {
     return path.startsWith("/") ? path : `/${path}`;
   }
 
-  private addRoute(path: string, handler: PtHandler, method: string) {
+  private addRoute(path: string, handler: PtHandler, method: PtRouteMethod) {
     const formattedUrl = this.basePath + path.replace(/\/$/, "");
     let routes = this.routesByUrl[formattedUrl];
 
@@ -64,7 +71,7 @@ export class PtRouter {
     }
 
     routes.push({
-      method,
+      method: method.toUpperCase(),
       handler,
     });
   }
