@@ -1,5 +1,6 @@
 import { IDatabaseCollection } from "../db";
 import { Meal } from "./interfaces";
+import { CreateMealInput } from "./meals.inputs";
 
 export class MealsService {
   constructor(private db: IDatabaseCollection<Meal>) {}
@@ -12,7 +13,7 @@ export class MealsService {
     return this.db.get();
   }
 
-  async addMeal(meal: Meal) {
+  async addMeal(meal: CreateMealInput) {
     await this.db.create(meal);
   }
 }

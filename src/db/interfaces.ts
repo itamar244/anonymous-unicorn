@@ -18,6 +18,6 @@ export interface IDatabaseCollection<TItem extends Item = Item> {
   get(): Promise<TItem[]>;
   find(query: Partial<TItem>): Promise<TItem[]>;
   findOneById(id: string): Promise<TItem | null>;
-  create(value: TItem): Promise<void>;
+  create(value: Omit<Item, '_id'>): Promise<void>;
   update(id: string, update: Partial<TItem>): Promise<void>;
 }

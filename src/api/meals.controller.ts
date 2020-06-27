@@ -1,6 +1,7 @@
-import { PtRouter } from "../pt-server";
+import { PtRouter, getBody } from "../pt-server";
+
 import { MealsService } from "./meals.service";
-import { Meal } from "./interfaces";
+import { CreateMealInput } from "./meals.inputs";
 
 export function createMealsController(service: MealsService) {
   const router = new PtRouter("/meals");
@@ -14,7 +15,8 @@ export function createMealsController(service: MealsService) {
   });
 
   router.post("/", async (req) => {
-    await service.addMeal(req.body as Meal);
+    const body = await getBody(CreateMealInput, req);
+    await service.addMeal(body);
   });
 
   return router;

@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { PtServer, PtRouter } from "./pt-server";
 
 import { createUnicornsController } from "./api/unicorns.controller";

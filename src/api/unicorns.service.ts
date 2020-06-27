@@ -1,6 +1,7 @@
 import { IDatabaseCollection } from "../db";
 import { Unicorn, ResolvedUnicorn } from "./interfaces";
 import { MealsService } from "./meals.service";
+import { CreateUnicornInput } from "./unicorns.inputs";
 
 export class UnicornsService {
   constructor(private db: IDatabaseCollection<Unicorn>, private mealsService: MealsService) {}
@@ -22,7 +23,7 @@ export class UnicornsService {
     return this.db.get();
   }
 
-  async createUnicorn(unicorn: Unicorn) {
+  async createUnicorn(unicorn: CreateUnicornInput) {
     await this.db.create(unicorn);
   }
 
