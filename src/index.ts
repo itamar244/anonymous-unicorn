@@ -1,20 +1,22 @@
 import "reflect-metadata";
+import Container from "typedi";
 import { PtServer, PtRouter } from "./pt-server";
 
+import { InMemoryDatabase, registerDatabase } from "./db";
 import { createUnicornsController } from "./api/unicorns.controller";
-import { UnicornsService } from "./api/unicorns.service";
 import { createMealsController } from "./api/meals.controller";
+import { UnicornsService } from "./api/unicorns.service";
 import { MealsService } from "./api/meals.service";
-import { InMemoryDatabase } from "./db";
 
+const container = Container.of("app");
 const database = new InMemoryDatabase();
 const server = new PtServer();
 
-const mealsService = new MealsService(database.collection("meals"));
-const unicornsService = new UnicornsService(database.collection("unicors"), mealsService);
+registerDatabase(container, database);
+
 const router = new PtRouter("/api");
-router.use(createUnicornsController(unicornsService));
-router.use(createMealsController(mealsService));
+router.use(createUnicornsController(container.get(UnicornsService)));
+router.use(createMealsController(container.get(MealsService)));
 
 server.use(router);
 

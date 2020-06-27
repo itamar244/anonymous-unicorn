@@ -5,6 +5,7 @@ import { DatabaseCollection } from "./basic-collection";
 
 export class InMemoryDatabase implements IDatabase<string, Item> {
   private collections = new Map<string, Item[]>();
+  private collectionMappings = new Map<string, string>();
   private itemId = 0;
   private dumpQueued: boolean = false;
 
@@ -26,12 +27,17 @@ export class InMemoryDatabase implements IDatabase<string, Item> {
     return new DatabaseCollection<Item>(this, collectionName) as any;
   }
 
+  addCollectionMapping(originalCollectionName: string, mappedTo: string): void {
+    this.collectionMappings.set(originalCollectionName, mappedTo);
+  }
+
   async get(collectionName: string): Promise<Item[]> {
-    let value = this.collections.get(collectionName);
+    const mappedCollectionName = this.collectionMappings.get(collectionName) ?? collectionName;
+    let value = this.collections.get(mappedCollectionName);
 
     if (value == null) {
       value = [];
-      this.collections.set(collectionName, value);
+      this.collections.set(mappedCollectionName, value);
     }
 
     return value;

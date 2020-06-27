@@ -7,6 +7,7 @@ export interface IDatabase<TCollectionName extends string = string, TItem extend
   collection<TCollectionItem extends TItem>(
     collectionName: TCollectionName
   ): IDatabaseCollection<TCollectionItem>;
+  addCollectionMapping(originalCollectionName: string, mappedTo: string): void;
   get(collectionName: TCollectionName): Promise<TItem[]>;
   find(collectionName: TCollectionName, query: Partial<TItem>): Promise<TItem[]>;
   findOneById(collectionName: TCollectionName, id: string): Promise<TItem | null>;
@@ -18,6 +19,6 @@ export interface IDatabaseCollection<TItem extends Item = Item> {
   get(): Promise<TItem[]>;
   find(query: Partial<TItem>): Promise<TItem[]>;
   findOneById(id: string): Promise<TItem | null>;
-  create(value: Omit<Item, '_id'>): Promise<void>;
+  create(value: Omit<Item, "_id">): Promise<void>;
   update(id: string, update: Partial<TItem>): Promise<void>;
 }

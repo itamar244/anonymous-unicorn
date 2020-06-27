@@ -1,10 +1,17 @@
-import { IDatabaseCollection } from "../db";
+import { Service } from "typedi";
+
+import { IDatabaseCollection, InjectCollection } from "../db";
 import { Unicorn, ResolvedUnicorn } from "./interfaces";
 import { MealsService } from "./meals.service";
 import { CreateUnicornInput } from "./unicorns.inputs";
 
+@Service()
 export class UnicornsService {
-  constructor(private db: IDatabaseCollection<Unicorn>, private mealsService: MealsService) {}
+  constructor(
+    @InjectCollection("unicorns")
+    private db: IDatabaseCollection<Unicorn>, 
+    private mealsService: MealsService,
+  ) {}
 
   async getUnicornById(id: string): Promise<ResolvedUnicorn | null> {
     const unicorn = await this.db.findOneById(id);
